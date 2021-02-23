@@ -35,6 +35,11 @@ cc.Class({
         maxMoveSpeed: 0,
         // 加速度
         accel: 0,
+         // 跳跃音效资源
+         jumpAudio: {
+            default: null,
+            type: cc.AudioClip
+        },
     },
 
     runJumpAction() {
@@ -45,8 +50,15 @@ cc.Class({
 
         // 创建一个缓动，按 jumpUp、jumpDown 的顺序执行动作
         var tween = cc.tween().sequence(jumpUp, jumpDown)
+        // 添加一个回调函数，在前面的动作都结束时调用我们定义的 playJumpSound() 方法
+        .call(this.playJumpSound, this);
         // 不断重复
         return cc.tween().repeatForever(tween);
+    },
+    
+    playJumpSound: function () {
+        // 调用声音引擎播放声音
+        cc.audioEngine.playEffect(this.jumpAudio, false);
     },
 
     onKeyDown(event) {
